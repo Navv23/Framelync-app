@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/Framelync-app/static/css/main.2b6e84e4.css",
-    "main.js": "/Framelync-app/static/js/main.66e9a5f4.js",
-    "static/js/453.0ef55996.chunk.js": "/Framelync-app/static/js/453.0ef55996.chunk.js",
-    "index.html": "/Framelync-app/index.html",
-    "main.2b6e84e4.css.map": "/Framelync-app/static/css/main.2b6e84e4.css.map",
-    "main.66e9a5f4.js.map": "/Framelync-app/static/js/main.66e9a5f4.js.map",
-    "453.0ef55996.chunk.js.map": "/Framelync-app/static/js/453.0ef55996.chunk.js.map"
+    "main.css": "/static/css/main.2b6e84e4.css",
+    "main.js": "/static/js/main.37ff35f8.js",
+    "static/js/453.0ef55996.chunk.js": "/static/js/453.0ef55996.chunk.js",
+    "index.html": "/index.html",
+    "main.2b6e84e4.css.map": "/static/css/main.2b6e84e4.css.map",
+    "main.37ff35f8.js.map": "/static/js/main.37ff35f8.js.map",
+    "453.0ef55996.chunk.js.map": "/static/js/453.0ef55996.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.2b6e84e4.css",
-    "static/js/main.66e9a5f4.js"
+    "static/js/main.37ff35f8.js"
   ]
 }
