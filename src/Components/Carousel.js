@@ -236,29 +236,39 @@ const TransparentCarousel = () => {
 
 
   const getResponsiveX = (position) => {
-    const baseFactor = windowWidth < 640 ? 0.85 : 0.; // Increased factor for mobiles
+    const baseFactor = 0.85;
     let factor = baseFactor;
     let additionalOffset = 0;
+    let mobileOffsetMultiplier = 1;
 
-    if (windowWidth < 768) {
-      factor = 0.9; // Further increased factor for small tablets
+    if (windowWidth < 640) {
+      factor = 1.3;
+      mobileOffsetMultiplier = 1.4; // Increased offset for very small screens
+    }
+    else if (windowWidth < 768) {
+      factor = 1.2;
+      mobileOffsetMultiplier = 1.3; // Increased offset for small tablets
     } else if (windowWidth < 1024) {
-      factor = 0.8;
+      factor = 1.0;
     } else if (windowWidth >= 1200) {
       additionalOffset = 250;
     }
+
+    const calculatedOffset = 98 * factor;
+    const calculatedFarOffset = 200 * factor;
+
 
     switch (position) {
       case "center":
         return 0;
       case "left":
-        return `-${98 * factor + additionalOffset}px`;
+        return `-${calculatedOffset + additionalOffset}px`;
       case "right":
-        return `${98 * factor + additionalOffset}px`;
+        return `${calculatedOffset + additionalOffset}px`;
       case "farLeft":
-        return `-${200 * factor + (additionalOffset * 2)}px`;
+        return `-${calculatedFarOffset + (additionalOffset * 2)}px`;
       case "farRight":
-        return `${200 * factor + (additionalOffset * 2)}px`;
+        return `${calculatedFarOffset + (additionalOffset * 2)}px`;
       default:
         return 0;
     }
@@ -300,7 +310,7 @@ const TransparentCarousel = () => {
     center: {
       x: 0,
       y: 0,
-      scale: windowWidth < 768 ? 0.95 : 1,
+      scale:  1,
       zIndex: 5,
       opacity: 1,
       filter: "brightness(1) blur(0px)",
@@ -316,10 +326,10 @@ const TransparentCarousel = () => {
     },
     left: {
       x: getResponsiveX("left"),
-      y: windowWidth < 768 ? 12 : 10,
-      scale: windowWidth < 768 ? 0.6 : 0.75,
+      y:  10,
+      scale: 0.75,
       zIndex: 3,
-      opacity: windowWidth < 768 ? 0.3 : 0.55,
+      opacity:  0.55,
       filter: "brightness(0.5) blur(0.8px)",
       transition: {
         type: "spring",
@@ -333,10 +343,10 @@ const TransparentCarousel = () => {
     },
     right: {
       x: getResponsiveX("right"),
-      y: windowWidth < 768 ? 12 : 10,
-      scale: windowWidth < 768 ? 0.6 : 0.75,
+      y:  10,
+      scale:  0.75,
       zIndex: 3,
-      opacity: windowWidth < 768 ? 0.3 : 0.55,
+      opacity:  0.55,
       filter: "brightness(0.5) blur(0.8px)",
       transition: {
         type: "spring",
@@ -350,7 +360,7 @@ const TransparentCarousel = () => {
     },
     farLeft: {
       x: getResponsiveX("farLeft"),
-      y: windowWidth < 768 ? 16 : 15,
+      y:  15,
       scale: 0.4,
       zIndex: 1,
       opacity: 0,
@@ -367,7 +377,7 @@ const TransparentCarousel = () => {
     },
     farRight: {
       x: getResponsiveX("farRight"),
-      y: windowWidth < 768 ? 16 : 15,
+      y:  15,
       scale: 0.4,
       zIndex: 1,
       opacity: 0,
@@ -384,7 +394,7 @@ const TransparentCarousel = () => {
     },
     hidden: (direction) => ({
       x: direction >= 0 ? "200%" : "-200%",
-      y: windowWidth < 768 ? 20 : 20,
+      y:  20,
       scale: 0.3,
       zIndex: 0,
       opacity: 0,
@@ -399,7 +409,7 @@ const TransparentCarousel = () => {
     }),
     exit: (direction) => ({
       x: direction > 0 ? "-200%" : "200%",
-      y: windowWidth < 768 ? 20 : 20,
+      y:  20,
       scale: 0.3,
       zIndex: 0,
       opacity: 0,
@@ -415,22 +425,22 @@ const TransparentCarousel = () => {
   };
 
   const handleDragEnd = (e, { offset, velocity }) => {
-    const swipeThreshold = windowWidth < 640 ? 15 : 20;
+    const swipeThreshold =  15;
     const velocityThreshold = 0.2;
     const swipeWeight =
-      Math.abs(offset.x) + Math.abs(velocity.x) * (windowWidth < 768 ? 70 : 60);
+      Math.abs(offset.x) + Math.abs(velocity.x) * ( windowWidth < 768 ? 70: 60);
 
     if (
       offset.x < -swipeThreshold ||
       (velocity.x < -velocityThreshold && offset.x < 0)
     ) {
-      const intensity = Math.min(1.1, swipeWeight / (windowWidth < 768 ? 120 : 130));
+      const intensity = Math.min(1.1, swipeWeight / ( windowWidth < 768 ? 120: 130));
       handleNext(true);
     } else if (
       offset.x > swipeThreshold ||
       (velocity.x > velocityThreshold && offset.x > 0)
     ) {
-      const intensity = Math.min(1.1, swipeWeight / (windowWidth < 768 ? 120 : 130));
+      const intensity = Math.min(1.1, swipeWeight / ( windowWidth < 768 ? 120: 130));
       handlePrev(true);
     }
   };
@@ -452,7 +462,7 @@ const TransparentCarousel = () => {
   const arrowContainerStyle = () => {
     const baseStyle = {
       display: 'flex',
-      gap: windowWidth < 640 ? '0.5rem' : '0.75rem',
+      gap:  '0.5rem',
       zIndex: 10,
       marginTop: '0.5rem',
       justifyContent: 'center',
@@ -494,9 +504,12 @@ const TransparentCarousel = () => {
       onMouseLeave={() => setIsHovered(false)}
     >
       <div
-        className="relative md:overflow-visible overflow-hidden flex justify-center items-center w-full"
+        className={cn(
+          "relative flex justify-center items-center w-full",
+          windowWidth < 1024 ? "overflow-x-visible" : "overflow-hidden md:overflow-visible", // Conditional overflow
+        )}
         style={{
-          perspective: windowWidth < 768 ? "700px" : "1000px",
+          perspective:  "1000px",
           height: carouselHeight,
         }}
       >
@@ -582,7 +595,7 @@ const TransparentCarousel = () => {
           onClick={() => handlePrev(true)}
           className={cn(
             "w-9 h-9 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center",
-            "text-gray-600 hover:text-blue-500 transition-colors cursor-pointer", // Removed bg-white/20 and hover:bg-white/30 and added cursor-pointer
+            "text-gray-600 hover:text-blue-500 transition-colors cursor-pointer",
             isAnimating && "text-gray-400 cursor-not-allowed"
           )}
           aria-label="Previous slide"
@@ -601,7 +614,7 @@ const TransparentCarousel = () => {
           onClick={() => handleNext(true)}
           className={cn(
             "w-9 h-9 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center",
-            "text-gray-600 hover:text-blue-500 transition-colors cursor-pointer",  // Removed bg-white/20 and hover:bg-white/30 and added cursor-pointer
+            "text-gray-600 hover:text-blue-500 transition-colors cursor-pointer",
             isAnimating && "text-gray-400 cursor-not-allowed"
           )}
           aria-label="Next slide"
@@ -622,3 +635,4 @@ const TransparentCarousel = () => {
 };
 
 export default TransparentCarousel;
+
