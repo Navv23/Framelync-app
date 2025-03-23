@@ -236,14 +236,14 @@ const TransparentCarousel = () => {
 
 
   const getResponsiveX = (position) => {
-    const baseFactor = windowWidth < 640 ? 0.65 : 0.8;
+    const baseFactor = windowWidth < 640 ? 0.85 : 0.; // Increased factor for mobiles
     let factor = baseFactor;
     let additionalOffset = 0;
 
     if (windowWidth < 768) {
-      factor = 0.7;
+      factor = 0.9; // Further increased factor for small tablets
     } else if (windowWidth < 1024) {
-      factor = 0.75;
+      factor = 0.8;
     } else if (windowWidth >= 1200) {
       additionalOffset = 250;
     }
@@ -601,7 +601,7 @@ const TransparentCarousel = () => {
           onClick={() => handleNext(true)}
           className={cn(
             "w-9 h-9 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center",
-            "text-gray-600 hover:text-blue-500 transition-colors cursor-pointer",  // Removed bg-white/20 and hover:bg-white/30 and added cursor-pointer
+            "text-gray-600 hover:text-blue-500 transition-colors cursor-pointer",  // Removed bg-white/20 and hover:bg-white/30 and added cursor-pointer
             isAnimating && "text-gray-400 cursor-not-allowed"
           )}
           aria-label="Next slide"

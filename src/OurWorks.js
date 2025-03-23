@@ -5,9 +5,9 @@ import { ArrowUpRight, PlayCircle } from "lucide-react";
 // Mock Button component (Styled with Tailwind)
 const Button = ({ variant, size, className, children, ...props }) => {
   const baseClasses =
-    "inline-flex items-center justify-center rounded-full font-medium transition-colors";
+    "inline-flex items-center justify-center rounded-full font-medium transition-colors font-inter"; // Added font-inter
   const sizeClasses =
-    size === "lg" ? "px-6 py-3 text-lg" : "px-4 py-2 text-base";
+    size === "lg" ? "px-8 py-3 text-lg" : "px-6 py-2.5 text-base"; // Adjusted sizes
   const variantClasses =
     variant === "primary"
       ? "bg-blue-600 text-white hover:bg-blue-700"
@@ -32,20 +32,20 @@ const Card = ({ className, children, ...props }) => (
   </div>
 );
 const CardHeader = ({ className, children, ...props }) => (
-  <div {...props} className={`flex flex-col space-y-1.5 p-4 ${className}`}>
+  <div {...props} className={`flex flex-col space-y-2 p-6 ${className}`}> {/* Increased padding */}
     {children}
   </div>
 );
 const CardTitle = ({ className, children, ...props }) => (
   <h3
     {...props}
-    className={`text-xl font-semibold leading-none tracking-tight text-gray-900 ${className}`}
+    className={`text-2xl font-semibold leading-tight tracking-tight text-gray-900 font-inter ${className}`} // Increased font size, added leading and font-inter
   >
     {children}
   </h3>
 );
 const CardContent = ({ className, children, ...props }) => (
-  <div {...props} className={`p-4 pt-0 ${className}`}>
+  <div {...props} className={`p-6 pt-0 ${className}`}>  {/* Increased padding */}
     {children}
   </div>
 );
@@ -72,13 +72,15 @@ const OurWorks = () => {
     },
     hover: {
       scale: 1.04,
-      boxShadow: "0px 8px 20px rgba(0, 0, 0, 0.1)", // Refined shadow
+      boxShadow: "0px 12px 24px rgba(0, 0, 0, 0.1)", // Slightly stronger shadow, refined
       transition: { duration: 0.2 },
     },
   };
 
   // Function to get YouTube thumbnail URL
   const getYoutubeThumbnailUrl = (url) => {
+    if (!url)
+      return "https://placehold.co/800x450/EEE/31343C?text=Thumbnail&font=Montserrat";
     const videoId = url.split("v=")[1];
     if (videoId) {
       const ampersandPosition = videoId.indexOf("&");
@@ -99,22 +101,24 @@ const OurWorks = () => {
       videos: [
         {
           title: "Dhatri Financial Services | Explainer Video",
-          videoUrl: "https://www.youtube.com/watch?v=xA7DG9z2uj4", // Replace with actual URL
+          videoUrl: "https://www.youtube.com/watch?v=xA7DG9z2uj4",
           thumbnail: getYoutubeThumbnailUrl(
             "https://www.youtube.com/watch?v=xA7DG9z2uj4"
-          ), // Use the function here
+          ),
         },
         {
           title: "Ryich delicacies | Logo Animation",
-          videoUrl: "https://www.youtube.com/watch?v=Y5hqc42F1X4", // Replace with actual URL
+          videoUrl: "https://www.youtube.com/watch?v=Y5hqc42F1X4",
           thumbnail: getYoutubeThumbnailUrl(
             "https://www.youtube.com/watch?v=Y5hqc42F1X4"
-          ), // Use the function here
+          ),
         },
         {
           title: "Our Intro | Kinetic Typography",
           videoUrl: "https://www.youtube.com/watch?v=x4El_DkAXPo",
-          thumbnail: getYoutubeThumbnailUrl("https://www.youtube.com/watch?v=x4El_DkAXPo"),
+          thumbnail: getYoutubeThumbnailUrl(
+            "https://www.youtube.com/watch?v=x4El_DkAXPo"
+          ),
         },
       ],
     },
@@ -125,7 +129,7 @@ const OurWorks = () => {
         {
           title: "",
           videoUrl: "",
-          thumbnail: "Coming Soon",
+          thumbnail: "https://placehold.co/800x450/EEE/31343C?text=Coming+Soon&font=Montserrat",
         },
       ],
     },
@@ -136,7 +140,8 @@ const OurWorks = () => {
         {
           title: "",
           videoUrl: "",
-          thumbnail: "Coming Soon",
+          thumbnail:
+            "https://placehold.co/800x450/EEE/31343C?text=Coming+Soon&font=Montserrat",
         },
       ],
     },
@@ -144,134 +149,130 @@ const OurWorks = () => {
 
   return (
     <div
-      className="bg-gradient-to-br from-gray-50 to-white min-h-screen py-12
-        flex flex-col items-center"
+      className="bg-gradient-to-br from-gray-50 to-white min-h-screen py-16
+        flex flex-col items-center" // Increased py
     >
       <motion.h1
         initial={{ opacity: 0, y: -30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, ease: "easeInOut", delay: 0.1 }}
-        className="text-center text-4xl sm:text-5xl md:text-6xl font-bold
-                  text-gray-900 mb-12 w-full
-                  pt-16 bg-clip-text text-transparent bg-gradient-to-r from-[#123557] to-[#123557]" // More vibrant title
+        className="text-center text-4xl sm:text-5xl md:text-6xl font-bold  // Reduced font size
+                  text-gray-900 mb-16 w-full  // Increased mb
+                  pt-12 sm:pt-20 bg-clip-text text-transparent bg-gradient-to-r from-[#123557] to-[#123557] font-inter" // More vibrant title, added font-inter //Reduced pt on mobile
       >
         Our Works
       </motion.h1>
 
       {/* Sections */}
-      <div className="w-full max-w-7xl space-y-24 px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-7xl space-y-32 px-4 sm:px-6 lg:px-8">
+        {/* Increased space-y */}
         {sections.map((section, index) => {
           const isProductDemoSection = section.title === "Product Demos";
           const isSocialMediaAdsSection = section.title === "Social Media Ads";
           return (
-            <motion.div
-              key={index}
-              variants={sectionVariants}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              className=""
-            >
-              <h2
-                className={cn(
-                  "text-2xl sm:text-3xl font-semibold text-center mb-4", // Reduced marginBottom
-                  isProductDemoSection || isSocialMediaAdsSection
-                    ? ""
-                    : "text-black" // Make Explainer Videos title black
-                )}
+            <div key={index}>
+              <motion.div
+                variants={sectionVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                className=""
               >
-                {section.title}
-              </h2>
-              <p className="text-gray-600 text-center mb-12 text-lg leading-relaxed max-w-3xl mx-auto">
-                {section.description}
-              </p>
-              <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-                {section.videos.map((video, videoIndex) => {
-                  if (isProductDemoSection || isSocialMediaAdsSection) {
+                <h2
+                  className={cn(
+                    "text-3xl sm:text-4xl font-semibold text-center mb-6 font-inter", // Increased font size, added mb, added font-inter
+                    isProductDemoSection || isSocialMediaAdsSection
+                      ? ""
+                      : "text-black" // Make Explainer Videos title black
+                  )}
+                >
+                  {section.title}
+                </h2>
+                <p className="text-gray-600 text-center mb-16 text-lg leading-relaxed max-w-3xl mx-auto font-inter">
+                  {/* Increased mb, added font-inter */}
+                  {section.description}
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10">
+                  {/* Increased gap */}
+                  {section.videos.map((video, videoIndex) => {
                     return (
                       <motion.div
                         key={videoIndex}
                         variants={videoVariants}
-                        className="rounded-xl overflow-hidden shadow-md border border-gray-200
-                                    transition-all duration-300 group relative bg-white
-                                    flex flex-col h-full"
+                        className="rounded-xl overflow-hidden shadow-lg border border-gray-200  // Increased shadow
+                                          transition-all duration-300 group relative bg-white
+                                          flex flex-col h-full"
                         whileHover="hover"
                       >
-                        <div className="relative flex items-center justify-center h-[200px]">
-                          <span className="text-gray-500 text-lg font-medium">{video.thumbnail}</span>
+                        <div className="relative">
+                          <img
+                            src={video.thumbnail}
+                            alt={video.title + " thumbnail"}
+                            className="w-full h-auto aspect-video object-cover"
+                          />
+                          <div
+                            className={cn(
+                              "absolute inset-0 flex items-center justify-center bg-black/40",
+                              "opacity-0 group-hover:opacity-100 transition-opacity duration-300",
+                              "rounded-xl",
+                            )}
+                          >
+                            <a
+                              href={video.videoUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="absolute inset-0 z-10 rounded-xl flex items-center justify-center"
+                              aria-label={`Watch ${video.title}`}
+                            >
+                              <PlayCircle className="w-16 h-16 text-white/90" />
+                              {/* Increased size */}
+                            </a>
+                          </div>
                         </div>
+                        <div className="p-4 sm:p-4 flex-grow flex items-center"></div>
+                        <Card className="shadow-none border-0">
+                          <CardHeader>
+                            <CardTitle className="text-xl font-semibold text-gray-900 font-inter">
+                              {/* Added font-inter */}
+                              {video.title}
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent>
+                            {video.videoUrl && <></>}
+                          </CardContent>
+                        </Card>
                       </motion.div>
                     );
-                  }
-
-                  return (
-                    <motion.div
-                      key={videoIndex}
-                      variants={videoVariants}
-                      className="rounded-xl overflow-hidden shadow-md border border-gray-200
-                                    transition-all duration-300 group relative bg-white
-                                    flex flex-col h-full"
-                      whileHover="hover"
-                    >
-                      <div className="relative">
-                        <img
-                          src={video.thumbnail}
-                          alt={video.title + " thumbnail"}
-                          className="w-full h-auto aspect-video object-cover"
-                        />
-                        <div
-                          className={cn(
-                            "absolute inset-0 flex items-center justify-center bg-black/40",
-                            "opacity-0 group-hover:opacity-100 transition-opacity duration-300", //Slightly longer transition
-                            "rounded-xl" //Ensure rounded corners
-                          )}
-                        >
-                          <a
-                            href={video.videoUrl}
-                            target="_blank"   // Open in a new tab for better UX
-                            rel="noopener noreferrer"
-                            className="absolute inset-0 z-10 rounded-xl flex items-center justify-center"
-                            aria-label={`Watch ${video.title}`}
-                          >
-                            <PlayCircle className="w-14 h-14 text-white/90" />
-                          </a>
-                        </div>
-                      </div>
-                      <div className="p-4 sm:p-4 flex-grow flex items-center"></div>
-                      <Card className="shadow-none border-0">
-                        <CardHeader>
-                          <CardTitle className="text-lg font-semibold text-gray-900">
-                            {video.title}
-                          </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          {video.videoUrl && <></>}
-                        </CardContent>
-                      </Card>
-                    </motion.div>
-                  );
-                })}
-              </div>
-            </motion.div>
+                  })}
+                </div>
+              </motion.div>
+              {index < sections.length - 1 && (
+                <div className="w-full flex justify-center py-12">
+                  <div className="w-32 h-[2px] bg-gray-300 rounded-full"></div>
+                </div>
+              )}
+            </div>
           );
         })}
 
         {/* Get a Quote Button */}
-        <div className="flex justify-center mt-16">
+        <div className="flex justify-center mt-20">
+          {/* Increased mt */}
           <Button
             size="lg"
             className={cn(
               "bg-gradient-to-r from-[#123557] to-[#123557] text-white",
-              "px-8 py-3 rounded-full shadow-lg hover:shadow-xl",
-              "hover:scale-105 transition-all duration-300", // Increased scale
-              "flex items-center gap-3 font-medium text-lg",
+              "px-10 py-4 rounded-full shadow-2xl hover:shadow-xl", // Increased px and py, stronger shadow
+              "hover:scale-105 transition-all duration-300",
+              "flex items-center gap-3 font-medium text-xl font-inter", // Increased font size, added font-inter
               "w-full sm:w-auto",
-              "border border-blue-500/10"
+              "border border-blue-500/10",
             )}
             to="/get-a-quote"
             variant="primary"
           >
-            Get a quote <ArrowUpRight className="w-6 h-6" />
+            Get a quote <ArrowUpRight className="w-7 h-7" />
+            {/* Increased size */}
           </Button>
         </div>
       </div>
@@ -280,3 +281,4 @@ const OurWorks = () => {
 };
 
 export default OurWorks;
+
