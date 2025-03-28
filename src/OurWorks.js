@@ -1,6 +1,6 @@
-import React from "react";
-import { motion } from "framer-motion";
-import { ArrowUpRight, PlayCircle } from "lucide-react";
+import React, { useState, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowUpRight, PlayCircle, X } from "lucide-react";
 
 // Mock Button component (Styled with Tailwind)
 const Button = ({ variant, size, className, children, ...props }) => {
@@ -31,9 +31,9 @@ const Card = ({ className, children, ...props }) => (
     {children}
   </div>
 );
-const CardHeader = ({ className, children, ...props }) => (
-  <div {...props} className={`flex flex-col space-y-2 p-6 ${className}`}> {/* Increased padding */}
-    {children}
+const CardHeader = ({ className, children: headerChildren, ...props }) => (
+  <div {...props} className={`flex flex-col space-y-2 p-6 ${className}`}>
+    {headerChildren}
   </div>
 );
 const CardTitle = ({ className, children, ...props }) => (
@@ -45,7 +45,7 @@ const CardTitle = ({ className, children, ...props }) => (
   </h3>
 );
 const CardContent = ({ className, children, ...props }) => (
-  <div {...props} className={`p-6 pt-0 ${className}`}>  {/* Increased padding */}
+  <div {...props} className={`p-6 pt-0 ${className}`}>
     {children}
   </div>
 );
@@ -93,6 +93,16 @@ const OurWorks = () => {
     return "https://placehold.co/800x450/EEE/31343C?text=Thumbnail&font=Montserrat"; // Return placeholder if no valid ID
   };
 
+  const [openImage, setOpenImage] = useState(null);
+
+  const handleImageClick = useCallback((imageUrl) => {
+    setOpenImage(imageUrl);
+  }, []);
+
+  const handleCloseImage = useCallback(() => {
+    setOpenImage(null);
+  }, []);
+
   // Section data
   const sections = [
     {
@@ -127,9 +137,11 @@ const OurWorks = () => {
       description: "Engaging demos that highlight key features and benefits.",
       videos: [
         {
-          title: "",
-          videoUrl: "",
-          thumbnail: "https://placehold.co/800x450/EEE/31343C?text=Coming+Soon&font=Montserrat",
+          title: "Garam Masala Packaging Design",
+          videoUrl: "garam-masala-packaging.png",
+          thumbnail: "garam-masala-packaging.png",
+          closeable: true,
+          playButton: false,
         },
       ],
     },
@@ -157,8 +169,8 @@ const OurWorks = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, ease: "easeInOut", delay: 0.1 }}
         className="text-center text-4xl sm:text-5xl md:text-6xl font-bold  // Reduced font size
-                  text-gray-900 mb-16 w-full  // Increased mb
-                  pt-12 sm:pt-20 bg-clip-text text-transparent bg-gradient-to-r from-[#123557] to-[#123557] font-inter" // More vibrant title, added font-inter //Reduced pt on mobile
+              text-gray-900 mb-16 w-full  // Increased mb
+              pt-12 sm:pt-20 bg-clip-text text-transparent bg-gradient-to-r from-[#123557] to-[#123557] font-inter" // More vibrant title, added font-inter //Reduced pt on mobile
       >
         Our Works
       </motion.h1>
@@ -201,8 +213,11 @@ const OurWorks = () => {
                         variants={videoVariants}
                         className="rounded-xl overflow-hidden shadow-lg border border-gray-200  // Increased shadow
                                           transition-all duration-300 group relative bg-white
-                                          flex flex-col h-full"
+                                          flex flex-col h-full cursor-pointer"
                         whileHover="hover"
+                        onClick={() =>
+                          video.closeable && handleImageClick(video.thumbnail)
+                        }
                       >
                         <div className="relative">
                           <img
@@ -210,24 +225,23 @@ const OurWorks = () => {
                             alt={video.title + " thumbnail"}
                             className="w-full h-auto aspect-video object-cover"
                           />
-                          <div
-                            className={cn(
-                              "absolute inset-0 flex items-center justify-center bg-black/40",
-                              "opacity-0 group-hover:opacity-100 transition-opacity duration-300",
-                              "rounded-xl",
-                            )}
-                          >
-                            <a
-                              href={video.videoUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="absolute inset-0 z-10 rounded-xl flex items-center justify-center"
-                              aria-label={`Watch ${video.title}`}
+                          {!video.playButton && (
+                            <div
+                              className={cn(
+                                "absolute inset-0 flex items-center justify-center bg-black/40",
+                                "opacity-0 group-hover:opacity-100 transition-opacity duration-300",
+                                "rounded-xl",
+                                {
+                                  "cursor-pointer": video.closeable,
+                                }
+                              )}
                             >
-                              <PlayCircle className="w-16 h-16 text-white/90" />
-                              {/* Increased size */}
-                            </a>
-                          </div>
+                              {/* Removed the external link wrapper */}
+                              {video.playButton !== false && (
+                                <PlayCircle className="w-16 h-16 text-white/90" />
+                              )}
+                            </div>
+                          )}
                         </div>
                         <div className="p-4 sm:p-4 flex-grow flex items-center"></div>
                         <Card className="shadow-none border-0">
@@ -266,7 +280,7 @@ const OurWorks = () => {
               "hover:scale-105 transition-all duration-300",
               "flex items-center gap-3 font-medium text-xl font-inter", // Increased font size, added font-inter
               "w-full sm:w-auto",
-              "border border-blue-500/10",
+              "border border-blue-500/10"
             )}
             to="/get-a-quote"
             variant="primary"
@@ -276,9 +290,39 @@ const OurWorks = () => {
           </Button>
         </div>
       </div>
+
+      <AnimatePresence>
+        {openImage && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4"
+            onClick={handleCloseImage} // Make sure the container also closes on click
+          >
+            <motion.img
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.8 }}
+              transition={{ duration: 0.3 }}
+              src={openImage}
+              alt="Full Size"
+              className="max-h-full max-w-full rounded-xl shadow-2xl"
+              onClick={(e) => e.stopPropagation()} // Prevent container click when image is clicked.
+            />
+            <button
+              onClick={handleCloseImage}
+              className="absolute top-6 right-6 bg-black/50 text-white rounded-full p-2
+               hover:bg-black/70 transition-colors z-10"
+            >
+              <X className="w-6 h-6" />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
 
 export default OurWorks;
-
