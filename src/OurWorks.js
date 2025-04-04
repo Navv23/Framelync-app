@@ -78,20 +78,19 @@ const OurWorks = () => {
   };
 
   // Function to get YouTube thumbnail URL
-  const getYoutubeThumbnailUrl = (url) => {
-    if (!url)
-      return "https://placehold.co/800x450/EEE/31343C?text=Thumbnail&font=Montserrat";
-    const videoId = url.split("v=")[1];
-    if (videoId) {
-      const ampersandPosition = videoId.indexOf("&");
-      const finalVideoId =
-        ampersandPosition !== -1
-          ? videoId.substring(0, ampersandPosition)
-          : videoId;
-      return `https://img.youtube.com/vi/${finalVideoId}/hqdefault.jpg`; // High quality thumbnail
-    }
-    return "https://placehold.co/800x450/EEE/31343C?text=Thumbnail&font=Montserrat"; // Return placeholder if no valid ID
-  };
+    const getYoutubeThumbnailUrl = (url) => {
+        if (!url) return "https://placehold.co/800x450/EEE/31343C?text=Thumbnail&font=Montserrat";
+        const videoId = url.split("v=")[1];
+        if (videoId) {
+            const ampersandPosition = videoId.indexOf("&");
+            const finalVideoId =
+                ampersandPosition !== -1
+                    ? videoId.substring(0, ampersandPosition)
+                    : videoId;
+           return `https://img.youtube.com/vi/${finalVideoId}/hqdefault.jpg`; // Use original thumbnail URL
+        }
+        return "https://placehold.co/800x450/EEE/31343C?text=Thumbnail&font=Montserrat"; // Return placeholder if no valid ID
+    };
 
   const [openImage, setOpenImage] = useState(null);
 
@@ -168,8 +167,8 @@ const OurWorks = () => {
         initial={{ opacity: 0, y: -30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, ease: "easeInOut", delay: 0.1 }}
-        className="text-center text-4xl sm:text-5xl md:text-6xl font-bold  // Reduced font size
-              text-gray-900 mb-16 w-full  // Increased mb
+        className="text-center text-4xl sm:text-5xl md:text-6xl font-bold   // Reduced font size
+              text-gray-900 mb-16 w-full   // Increased mb
               pt-12 sm:pt-20 bg-clip-text text-transparent bg-gradient-to-r from-[#123557] to-[#123557] font-inter" // More vibrant title, added font-inter //Reduced pt on mobile
       >
         Our Works
@@ -211,13 +210,19 @@ const OurWorks = () => {
                       <motion.div
                         key={videoIndex}
                         variants={videoVariants}
-                        className="rounded-xl overflow-hidden shadow-lg border border-gray-200  // Increased shadow
-                                          transition-all duration-300 group relative bg-white
-                                          flex flex-col h-full cursor-pointer"
+                        className="rounded-xl overflow-hidden shadow-lg border border-gray-200   // Increased shadow
+                            transition-all duration-300 group relative bg-white
+                            flex flex-col h-full cursor-pointer"
                         whileHover="hover"
-                        onClick={() =>
-                          video.closeable && handleImageClick(video.thumbnail)
-                        }
+                        onClick={() => {
+                          if (video.videoUrl.startsWith("http")) {
+                            // Open external link (YouTube)
+                            window.open(video.videoUrl, "_blank");
+                          } else if (video.closeable) {
+                            // Handle image click for Product Demos
+                            handleImageClick(video.thumbnail);
+                          }
+                        }}
                       >
                         <div className="relative">
                           <img
@@ -232,11 +237,10 @@ const OurWorks = () => {
                                 "opacity-0 group-hover:opacity-100 transition-opacity duration-300",
                                 "rounded-xl",
                                 {
-                                  "cursor-pointer": video.closeable,
+                                  "cursor-pointer": video.closeable || video.videoUrl.startsWith("http"),
                                 }
                               )}
                             >
-                              {/* Removed the external link wrapper */}
                               {video.playButton !== false && (
                                 <PlayCircle className="w-16 h-16 text-white/90" />
                               )}
@@ -314,7 +318,7 @@ const OurWorks = () => {
             <button
               onClick={handleCloseImage}
               className="absolute top-6 right-6 bg-black/50 text-white rounded-full p-2
-               hover:bg-black/70 transition-colors z-10"
+                hover:bg-black/70 transition-colors z-10"
             >
               <X className="w-6 h-6" />
             </button>
